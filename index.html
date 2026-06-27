@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>iOS WidgetKit Scaffold Generator — Home Screen & Lock Screen Widget Code</title>
+<meta name="description" content="Generate complete iOS WidgetKit Swift boilerplate — TimelineProvider, TimelineEntry, Widget body, and size-specific views. Supports StaticConfiguration, IntentConfiguration, and AppIntentConfiguration. Exports 4 Swift files. Free, browser-only." />
+<link rel="canonical" href="https://ios-widget-generator.vercel.app/" />
+<meta property="og:title" content="iOS WidgetKit Scaffold Generator" />
+<meta property="og:description" content="Generate complete WidgetKit Swift code — TimelineProvider, Entry struct, Widget views, and WidgetBundle. Supports all widget families. Free." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="iOS WidgetKit Scaffold Generator" />
+<meta name="twitter:description" content="Generate WidgetKit Swift boilerplate for iOS home screen and lock screen widgets. Free." />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"iOS WidgetKit Scaffold Generator","url":"https://ios-widget-generator.vercel.app/","description":"Generate complete iOS WidgetKit Swift scaffolding — TimelineProvider, TimelineEntry, Widget configuration and views. Supports Static, Intent, and AppIntent configurations and all widget families.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<style>
+  :root{
+    --bg:#0b0c10;--panel:#15171f;--panel2:#1c1f2a;--ink:#eef1f7;--muted:#9aa3b5;
+    --line:#262a36;--accent:#5b8cff;--ok:#34d399;--warn:#fbbf24;--err:#f87171;
+    --radius:14px;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:radial-gradient(1100px 600px at 20% -10%,#0d1520 0,transparent 55%),var(--bg)}
+  header{padding:42px 22px 10px;max-width:1120px;margin:0 auto}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);
+    border:1px solid var(--line);padding:5px 11px;border-radius:999px;background:var(--panel)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+  h1{font-size:30px;margin:16px 0 6px;letter-spacing:-.4px}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--muted);max-width:680px}
+  main{max-width:1120px;margin:18px auto 60px;padding:0 22px;display:grid;grid-template-columns:1fr 440px;gap:22px;align-items:start}
+  @media(max-width:940px){main{grid-template-columns:1fr}}
+
+  /* Cards */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px}
+  .card-title{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+  .form-row{margin-bottom:12px}
+  .form-row:last-child{margin-bottom:0}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:500}
+  input[type=text],select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:8px;padding:7px 12px;font:inherit;font-size:13.5px;outline:none;width:100%}
+  input[type=text]:focus,select:focus{border-color:var(--accent)}
+  input[type=number]{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:8px;padding:7px 12px;font:inherit;font-size:13.5px;outline:none;width:80px}
+  input[type=number]:focus{border-color:var(--accent)}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+
+  /* Size grid */
+  .size-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+  .size-chk{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+  .size-chk:hover{border-color:var(--accent)}
+  .size-chk input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex:none}
+  .size-chk.checked{border-color:rgba(91,140,255,.5);background:rgba(91,140,255,.07)}
+
+  /* Entry fields */
+  .field-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+  .field-name{flex:1;min-width:80px}
+  .field-sample{flex:1;min-width:60px}
+  .field-row select{flex:0 0 90px}
+  .rm-btn{background:none;border:1px solid var(--line);color:var(--err);border-radius:6px;
+    padding:3px 8px;cursor:pointer;font-size:12px;flex:none}
+  .rm-btn:hover{background:rgba(248,113,113,.1)}
+  .add-field-btn{background:none;border:1px dashed var(--line);color:var(--muted);border-radius:8px;
+    padding:6px 14px;cursor:pointer;font-size:13px;width:100%;margin-top:4px}
+  .add-field-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* Output */
+  .output-sticky{position:sticky;top:16px}
+  .output-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .output-header{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);gap:6px;flex-wrap:wrap}
+  .output-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex:1}
+  .otab-bar{display:flex;gap:3px;padding:9px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .otab{padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:none;
+    color:var(--muted);font:11.5px/1 inherit;font-weight:600;cursor:pointer}
+  .otab:hover{border-color:var(--accent);color:var(--accent)}
+  .otab.active{background:rgba(91,140,255,.15);border-color:var(--accent);color:var(--accent)}
+  .action-btn{cursor:pointer;border:1px solid var(--line);border-radius:7px;padding:5px 12px;
+    font:12px/1 inherit;font-weight:600;background:none;color:var(--muted);flex:none}
+  .action-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .action-btn.primary{background:linear-gradient(180deg,#6b97ff,#4a78ff);border:0;color:#fff}
+  .action-btn.primary:hover{opacity:.9}
+  pre{margin:0;padding:14px;font-size:11.5px;font-family:var(--mono);white-space:pre;
+    color:var(--ink);max-height:600px;overflow:auto;line-height:1.6}
+
+  .tip-box{background:linear-gradient(135deg,#1a2035 0%,#141825 100%);border:1px solid #2a304a;
+    border-radius:14px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:12px}
+  footer{max-width:1120px;margin:0 auto;padding:0 22px 50px;color:#6b7385;font-size:12.5px}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <span class="badge"><span class="dot"></span>TimelineProvider · SwiftUI views · all families · Static / Intent / AppIntent · browser-only</span>
+  <h1>iOS <span>WidgetKit Generator</span></h1>
+  <p class="sub">Configure your iOS widget and get complete Swift scaffolding — <code>TimelineProvider</code>, <code>TimelineEntry</code>, <code>Widget</code> configuration, size-specific SwiftUI views, and <code>WidgetBundle</code>. Paste into Xcode and start building.</p>
+</header>
+<main>
+
+<!-- Left: config -->
+<div>
+  <!-- Identity -->
+  <div class="card">
+    <div class="card-title">Widget Identity</div>
+    <div class="form-row">
+      <label for="inp_widgetName">Widget Type Name</label>
+      <input type="text" id="inp_widgetName" value="MyWidget" oninput="generate()" placeholder="MyWidget" />
+      <div class="hint">Swift type name used for the Widget struct, Provider, and Entry.</div>
+    </div>
+    <div class="form-row">
+      <label for="inp_displayName">Display Name</label>
+      <input type="text" id="inp_displayName" value="My Widget" oninput="generate()" placeholder="My Widget" />
+      <div class="hint">Shown in the widget picker.</div>
+    </div>
+    <div class="form-row">
+      <label for="inp_description">Description</label>
+      <input type="text" id="inp_description" value="A helpful widget." oninput="generate()" placeholder="A helpful widget." />
+    </div>
+    <div class="form-row">
+      <label for="inp_bundleId">Widget Extension Bundle ID</label>
+      <input type="text" id="inp_bundleId" value="com.example.MyApp.MyWidget" oninput="generate()" placeholder="com.example.MyApp.MyWidget" />
+    </div>
+  </div>
+
+  <!-- Configuration type -->
+  <div class="card">
+    <div class="card-title">Configuration Type</div>
+    <div class="form-row">
+      <label for="inp_configType">Type</label>
+      <select id="inp_configType" onchange="generate()">
+        <option value="static">StaticConfiguration — no user customisation</option>
+        <option value="intent">IntentConfiguration — Siri Intent (deprecated in iOS 17)</option>
+        <option value="appIntent">AppIntentConfiguration — App Intent (iOS 17+, recommended)</option>
+      </select>
+      <div class="hint">AppIntentConfiguration is the modern approach for user-configurable widgets (iOS 17+).</div>
+    </div>
+  </div>
+
+  <!-- Widget sizes -->
+  <div class="card">
+    <div class="card-title">Supported Families</div>
+    <div class="size-grid">
+      <label class="size-chk checked"><input type="checkbox" checked onchange="toggleSize('systemSmall',this.checked)" />System Small</label>
+      <label class="size-chk checked"><input type="checkbox" checked onchange="toggleSize('systemMedium',this.checked)" />System Medium</label>
+      <label class="size-chk"><input type="checkbox" onchange="toggleSize('systemLarge',this.checked)" />System Large</label>
+      <label class="size-chk"><input type="checkbox" onchange="toggleSize('systemExtraLarge',this.checked)" />Extra Large (iPad)</label>
+      <label class="size-chk"><input type="checkbox" onchange="toggleSize('accessoryCircular',this.checked)" />Accessory Circular</label>
+      <label class="size-chk"><input type="checkbox" onchange="toggleSize('accessoryRectangular',this.checked)" />Accessory Rectangular</label>
+      <label class="size-chk"><input type="checkbox" onchange="toggleSize('accessoryInline',this.checked)" />Accessory Inline</label>
+    </div>
+    <div class="hint" style="margin-top:8px">Accessory families require iOS 16+. Lock Screen widgets are shown on the lock screen and in StandBy mode.</div>
+  </div>
+
+  <!-- Timeline refresh -->
+  <div class="card">
+    <div class="card-title">Timeline Refresh</div>
+    <div class="form-row">
+      <label for="inp_refreshKind">Reload Policy</label>
+      <select id="inp_refreshKind" onchange="generate()">
+        <option value="atEnd">.atEnd — reload after all entries are displayed</option>
+        <option value="after">.after(date) — reload after specific time</option>
+        <option value="never">.never — reload only when app calls reloadTimelines</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="inp_refreshMinutes">Refresh interval (minutes)</label>
+      <input type="number" id="inp_refreshMinutes" value="30" min="1" max="1440" oninput="generate()" />
+      <div class="hint">WidgetKit may not honour intervals under 15 minutes.</div>
+    </div>
+  </div>
+
+  <!-- Entry fields -->
+  <div class="card">
+    <div class="card-title">TimelineEntry Data Fields</div>
+    <div class="hint" style="margin-bottom:10px">These become properties on your Entry struct. The <code>date</code> property is always included automatically.</div>
+    <div id="entryFields"></div>
+    <button class="add-field-btn" onclick="addEntryField()">+ Add Field</button>
+  </div>
+</div>
+
+<!-- Right: output -->
+<div class="output-sticky">
+  <div class="output-card">
+    <div class="output-header">
+      <span class="output-title">Swift Output</span>
+      <button class="action-btn" id="copyBtn" onclick="copyOutput()">Copy</button>
+      <button class="action-btn primary" onclick="downloadOutput()">↓ Download</button>
+    </div>
+    <div class="otab-bar">
+      <button class="otab active" id="otab_main"   onclick="switchOutputTab('main')">Provider + Widget</button>
+      <button class="otab"        id="otab_view"   onclick="switchOutputTab('view')">Views</button>
+      <button class="otab"        id="otab_bundle" onclick="switchOutputTab('bundle')">WidgetBundle</button>
+      <button class="otab"        id="otab_plist"  onclick="switchOutputTab('plist')">Info.plist</button>
+    </div>
+    <pre id="output"></pre>
+  </div>
+
+  <div class="tip-box">
+    <div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:4px">✦ Support this project</div>
+      <div style="color:#9aa3b5;font-size:13px">Free tool by Orb Intelligence.</div>
+    </div>
+    <a href="https://buy.stripe.com/4gM28t2xG3SngLvbiY6wE01" target="_blank" rel="noopener"
+      style="display:inline-block;background:linear-gradient(180deg,#6b97ff,#4a78ff);color:#fff;font-weight:650;font-size:14px;padding:10px 20px;border-radius:10px;text-decoration:none;white-space:nowrap">
+      Support · $9.90
+    </a>
+  </div>
+</div>
+
+<footer>
+  Built by <b>Orb Intelligence</b>. WidgetKit requires iOS 14+. Lock Screen widgets require iOS 16+. AppIntentConfiguration requires iOS 17+. All code generation is done locally.
+  <br><br>
+  More free tools:
+  <a href="https://appstore-metadata-auditor.vercel.app/" rel="noopener">Metadata Auditor</a> ·
+  <a href="https://ios-privacy-policy-generator.vercel.app/" rel="noopener">Privacy Policy Generator</a> ·
+  <a href="https://ios-app-review-generator.vercel.app/" rel="noopener">Review Responder</a> ·
+  <a href="https://appstore-screenshot-generator-theta.vercel.app/" rel="noopener">Screenshot Generator</a> ·
+  <a href="https://appstore-keyword-optimizer.vercel.app/" rel="noopener">Keyword Optimizer</a> ·
+  <a href="https://appstore-release-notes-generator.vercel.app/" rel="noopener">Release Notes Generator</a> ·
+  <a href="https://ios-app-icon-resizer.vercel.app/" rel="noopener">Icon Resizer</a> ·
+  <a href="https://appstore-submission-checklist.vercel.app/" rel="noopener">Submission Checklist</a> ·
+  <a href="https://ios-privacy-manifest-generator.vercel.app/" rel="noopener">Privacy Manifest Generator</a> ·
+  <a href="https://ios-entitlements-generator.vercel.app/" rel="noopener">Entitlements Generator</a> ·
+  <a href="https://testflight-feedback-organizer.vercel.app/" rel="noopener">Beta Feedback Organizer</a> ·
+  <a href="https://appstore-localization-helper.vercel.app/" rel="noopener">Localization Helper</a> ·
+  <a href="https://appstore-age-rating-calculator.vercel.app/" rel="noopener">Age Rating Calculator</a> ·
+  <a href="https://ios-iap-configurator.vercel.app/" rel="noopener">IAP Configurator</a> ·
+  <a href="https://ios-push-payload-builder.vercel.app/" rel="noopener">Push Payload Builder</a> ·
+  <a href="https://xcode-build-phase-generator.vercel.app/" rel="noopener">Build Phase Generator</a> ·
+  <a href="https://ios-url-scheme-tester.vercel.app/" rel="noopener">URL Scheme Tester</a> ·
+  <a href="https://swift-package-manifest-builder.vercel.app/" rel="noopener">SPM Manifest Builder</a> ·
+  <a href="https://ios-info-plist-generator.vercel.app/" rel="noopener">Info.plist Generator</a> ·
+  <a href="https://xcode-xcconfig-generator.vercel.app/" rel="noopener">xcconfig Generator</a> ·
+  <a href="https://fastlane-config-generator.vercel.app/" rel="noopener">Fastlane Config Generator</a> ·
+  <a href="https://xcode-snippet-generator.vercel.app/" rel="noopener">Snippet Generator</a> ·
+  <a href="https://ios-color-set-generator.vercel.app/" rel="noopener">Color Set Generator</a> ·
+  <a href="https://ios-haptic-pattern-generator.vercel.app/" rel="noopener">Haptic Pattern Generator</a> ·
+  <a href="https://ios-widget-generator.vercel.app/" rel="noopener">WidgetKit Generator</a>
+</footer>
+
+</main>
+<script src="widget.js"></script>
+</body>
+</html>
